@@ -10,14 +10,7 @@
     {
       "src": "/",
       "dest": "/"
-    },
-    {
-      "src": "/releases",
-      "dest": "/releases"
-    },
-    {
-      "src": "/origins",
-      "dest": "/origins"
     }
-  ]
+  ],
+  "rewrites": [{"source": "/release/(.*)", "destination": "/release"}]
 }
