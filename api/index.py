@@ -4,7 +4,7 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
-DB_URI = os.environ["DB_URI"]
+DB_URI = os.environ["MONGODB_URI"]
 
 if not DB_URI:
     raise RuntimeError("environment variables not adequate")

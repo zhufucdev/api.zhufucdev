@@ -13,5 +13,5 @@ To run this in a local development env:
 mongod ... &
 
 npm i -g vercel
-vercel env add DB_URI development
+vercel env add MONGODB_URI development
 ```
