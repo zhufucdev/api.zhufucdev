@@ -37,3 +37,9 @@ def release(product: str):
         collection = releases.find()
 
     return jsonify([as_release(ele) for ele in collection])
+
+
+@app.route('/')
+def home():
+    return "Welcome to Steve's API. If you have no idea what are" \
+           "you doing, just let go."
