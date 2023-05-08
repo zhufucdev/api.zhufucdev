@@ -41,5 +41,5 @@ def release(product: str):
 
 @app.route('/')
 def home():
-    return "Welcome to Steve's API. If you have no idea what are" \
+    return "Welcome to Steve's API. If you have no idea what are " \
            "you doing, just let go."
