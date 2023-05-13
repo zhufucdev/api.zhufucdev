@@ -1,6 +1,3 @@
-import alias from "./alias";
-
-
 function getQualified(qualification: Qualification | undefined, assets: ReleaseAsset[]): ReleaseAsset | undefined {
     if (!qualification) return assets[0]
     for (const asset of assets) {
@@ -30,7 +27,7 @@ class GithubProvider implements ReleaseProvider {
     async getUpdate(current: number, qualification?: Qualification): Promise<Release | undefined> {
         const response =
             await fetch(
-                `https://api.github.com/repos/zhufucdev/${alias[this.product]}/releases/latest`,
+                `https://api.github.com/repos/zhufucdev/${this.product}/releases/latest`,
                 {
                     headers: {
                         'Accept': 'application/vnd.github+json',
