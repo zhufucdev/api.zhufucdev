@@ -1,8 +1,5 @@
 import alias from "./alias";
 
-const ghToken = process.env["GITHUB_TOKEN"];
-if (!ghToken) throw 'environment variables not adequate';
-
 
 function getQualified(qualification: Qualification | undefined, assets: ReleaseAsset[]): ReleaseAsset | undefined {
     if (!qualification) return assets[0]
@@ -37,7 +34,6 @@ class GithubProvider implements ReleaseProvider {
                 {
                     headers: {
                         'Accept': 'application/vnd.github+json',
-                        'Authorization': `Bearer ${ghToken}`,
                         'X-GitHub-Api-Version': '2022-11-28'
                     }
                 }
