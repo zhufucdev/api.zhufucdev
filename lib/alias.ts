@@ -1,5 +1,5 @@
 const lut: {[key: string]: string} = {
-    'MotionEmulator': 'me'
+    'me': 'MotionEmulator'
 }
 
 export default lut;
