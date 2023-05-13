@@ -1,6 +1,5 @@
 import GithubProvider from "../lib/github-provider";
 import alias from "../lib/alias";
-import {Response} from "@edge-runtime/primitives";
 
 export const config = {
     runtime: 'edge'
