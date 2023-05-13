@@ -1,5 +1,5 @@
 import GithubProvider from "../lib/github-provider";
-import alias from "../lib/alias";
+import {get, has} from "@vercel/edge-config";
 
 export const config = {
     runtime: 'edge'
@@ -15,7 +15,7 @@ export default async (req: Request) => {
     if (!product) {
         return new Response('product is not optional', {status: 400})
     }
-    if (product !in alias) {
+    if (!(await has(product))) {
         return new Response(`unknown product: ${product}`, {status: 400})
     }
     if (os && !['android', 'linux', 'windows', 'darwin'].includes(os)) {
@@ -25,7 +25,7 @@ export default async (req: Request) => {
         return new Response(`unknown arch: ${arch}`, {status: 400})
     }
 
-    const provider = new GithubProvider(alias[product])
+    const provider = new GithubProvider((await get(product))!)
     const current = query.has('current') ? provider.parseVersion(query.get('current')!) : 0
     const qualification: Qualification = {
         os: os as OperatingSystem,

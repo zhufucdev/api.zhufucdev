@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@edge-runtime/types": "^2.0.8",
+    "@vercel/edge-config": "^0.1.10",
     "typescript": "^5.0.4"
   },
   "devDependencies": {
