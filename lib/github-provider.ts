@@ -1,5 +1,4 @@
 import alias from "./alias";
-import * as process from "process";
 
 const ghToken = process.env["GITHUB_TOKEN"];
 if (!ghToken) throw 'environment variables not adequate';

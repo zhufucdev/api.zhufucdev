@@ -1,5 +1,5 @@
-import GithubProvider from "../github-provider";
-import alias from "../alias";
+import GithubProvider from "../lib/github-provider";
+import alias from "../lib/alias";
 
 export const config = {
     runtime: 'edge'
