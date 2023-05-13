@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "@edge-runtime/types": "^2.0.8",
-    "octokit": "^2.0.14",
-    "query-string": "^8.1.0"
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.1.3"
   }
 }

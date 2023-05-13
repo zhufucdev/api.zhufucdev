@@ -1,11 +1,9 @@
 import alias from "./alias";
-import {Octokit} from "octokit";
-import {ReleaseAsset} from "@octokit/webhooks-types";
+import * as process from "process";
 
 const ghToken = process.env["GITHUB_TOKEN"];
 if (!ghToken) throw 'environment variables not adequate';
 
-const octokit = new Octokit({auth: ghToken});
 
 function getQualified(qualification: Qualification | undefined, assets: ReleaseAsset[]): ReleaseAsset | undefined {
     if (!qualification) return assets[0]
@@ -16,6 +14,16 @@ function getQualified(qualification: Qualification | undefined, assets: ReleaseA
     }
 }
 
+interface ReleaseAsset {
+    name: string
+    browser_download_url: string
+}
+
+interface ReleaseMeta {
+    tag_name: string
+    assets: ReleaseAsset[]
+}
+
 class GithubProvider implements ReleaseProvider {
     product: string
 
@@ -24,16 +32,25 @@ class GithubProvider implements ReleaseProvider {
     }
 
     async getUpdate(current: number, qualification?: Qualification): Promise<Release | undefined> {
-        const latest = await octokit.rest.repos.getLatestRelease({
-            owner: 'zhufucdev',
-            repo: alias[this.product],
-        });
-        if (current <= 0 || current < this.parseVersion(latest.data.tag_name)) {
-            const release = getQualified(qualification, latest.data.assets as ReleaseAsset[])
+        const response =
+            await fetch(
+                `https://api.github.com/repos/zhufucdev/${alias[this.product]}/releases/latest`,
+                {
+                    headers: {
+                        'Accept': 'application/vnd.github+json',
+                        'Authorization': `Bearer ${ghToken}`,
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
+                }
+            )
+        if (!response.ok) return undefined
+        const latest = await response.json() as ReleaseMeta
+        if (current <= 0 || current < this.parseVersion(latest.tag_name)) {
+            const release = getQualified(qualification, latest.assets as ReleaseAsset[])
             if (!release) return undefined;
             return {
                 url: release.browser_download_url,
-                name: latest.data.tag_name
+                name: latest.tag_name
             }
         }
         return undefined;
