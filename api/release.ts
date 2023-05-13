@@ -1,12 +1,15 @@
 import GithubProvider from "../lib/github-provider";
 import alias from "../lib/alias";
+import {Response} from "@edge-runtime/primitives";
 
 export const config = {
     runtime: 'edge'
 };
 
 export default async (req: Request) => {
-    const query = new URLSearchParams(/.*\?(.*)/g.exec(req.url)![1])
+    const queryScheme = /.*\?(.*)/g.exec(req.url);
+    if (!queryScheme) return new Response('query must contain at lest product', {status: 400})
+    const query = new URLSearchParams(queryScheme[1])
     const product = query.get('product'),
         os = query.get('os'),
         arch = query.get('arch')
