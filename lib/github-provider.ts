@@ -42,11 +42,17 @@ class GithubProvider implements ReleaseProvider {
                     }
                 }
             )
-        if (!response.ok) return undefined
+        if (!response.ok) {
+            console.warn(`[Github Provider] Fetching ${response.url} responded with code ${response.status}`)
+            return undefined
+        }
         const latest = await response.json() as ReleaseMeta
         if (current <= 0 || current < this.parseVersion(latest.tag_name)) {
             const release = getQualified(qualification, latest.assets as ReleaseAsset[])
-            if (!release) return undefined;
+            if (!release) {
+                console.warn(`[Github Provider] Qualification ${JSON.stringify(qualification)} wasn't met`)
+                return undefined;
+            }
             return {
                 url: release.browser_download_url,
                 name: latest.tag_name
