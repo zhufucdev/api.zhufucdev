@@ -1,8 +1,26 @@
+const archAlias: {[key: string]: Architect} = {
+    'armeabi': 'arm32',
+    'x86_64': 'amd64'
+}
+
+const osAlias: {[key: string]: OperatingSystem} = {
+    'win': 'windows',
+    'macos': 'darwin'
+}
+
+function match<T extends string>(name: string, qualification: T, alias: {[key: string]: T}): boolean {
+    if (name.includes(qualification)) return true
+    for (const aliasName in alias) {
+        if (alias[aliasName] == qualification && name.includes(aliasName)) return true
+    }
+    return false
+}
+
 function getQualified(qualification: Qualification | undefined, assets: ReleaseAsset[]): ReleaseAsset | undefined {
     if (!qualification) return assets[0]
     for (const asset of assets) {
-        if ((qualification.os && asset.name.includes(qualification.os) || !qualification.os)
-            && (qualification.arch && asset.name.includes(qualification.arch) || !qualification.arch))
+        if ((qualification.os && match(asset.name, qualification.os, osAlias) || !qualification.os)
+            && (qualification.arch && match(asset.name, qualification.arch, archAlias) || !qualification.arch))
             return asset
     }
 }
