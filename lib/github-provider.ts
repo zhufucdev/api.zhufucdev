@@ -1,17 +1,15 @@
 import {match as aliasMatch, osAlias, archAlias} from "./utility";
 
-function getQualified(qualification: Qualification,
+function getQualified(qualification: Qualification | undefined,
                       profile: ProductProfile,
                       assets: ReleaseAsset[]): ReleaseAsset | undefined {
-    if (!qualification) return assets[0]
-
     let best: [number, ReleaseAsset] | undefined = undefined
     for (const asset of assets) {
-        let score = 0
-
         if (profile.match && asset.name.match(new RegExp(profile.match))) {
             return asset
         }
+
+        let score = 0
 
         function sort(qualification: string, observe: string, alias: { [key: string]: string }) {
             const match = asset.name.match(new RegExp(observe))
@@ -20,15 +18,17 @@ function getQualified(qualification: Qualification,
             }
         }
 
-        if (qualification.arch && profile.matchArch) {
-            sort(qualification.arch, profile.matchArch, archAlias)
-        }
-        if (qualification.os && profile.matchOs) {
-            sort(qualification.os, profile.matchOs, osAlias)
-        }
+        if (qualification) {
+            if (qualification.arch && profile.matchArch) {
+                sort(qualification.arch, profile.matchArch, archAlias)
+            }
+            if (qualification.os && profile.matchOs) {
+                sort(qualification.os, profile.matchOs, osAlias)
+            }
 
-        if (!best || score > best[0]) {
-            best = [score, asset]
+            if (!best || score > best[0]) {
+                best = [score, asset]
+            }
         }
     }
 
@@ -79,7 +79,7 @@ class GithubProvider implements ReleaseProvider {
         const latest = await response.json() as ReleaseMeta
         if (current <= 0 || current < this.parseVersion(latest.tag_name)) {
             const release =
-                !qualification ? latest.assets[0] : getQualified(qualification, this.profile, latest.assets as ReleaseAsset[])
+                getQualified(qualification, this.profile, latest.assets as ReleaseAsset[])
             if (!release) {
                 console.warn(`[Github Provider] Qualification ${JSON.stringify(qualification)} wasn't met`)
                 return undefined;
