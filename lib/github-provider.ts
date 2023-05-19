@@ -9,7 +9,7 @@ function getQualified(qualification: Qualification,
     for (const asset of assets) {
         let score = 0
 
-        if (profile.match && profile.match.match(asset.name)) {
+        if (profile.match && asset.name.match(new RegExp(profile.match))) {
             return asset
         }
 
