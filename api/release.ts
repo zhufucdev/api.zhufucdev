@@ -25,7 +25,7 @@ export default async (req: Request) => {
         return new Response(`unknown arch: ${arch}`, {status: 400})
     }
 
-    const provider = new GithubProvider((await get(product))!)
+    const provider = new GithubProvider(product, (await get(product))!)
     const current = query.has('current') ? provider.parseVersion(query.get('current')!) : 0
     const qualification: Qualification = {
         os: os as OperatingSystem,

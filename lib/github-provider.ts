@@ -1,12 +1,47 @@
-import { match, osAlias, archAlias } from "./utility";
+import {match as aliasMatch, osAlias, archAlias} from "./utility";
 
-function getQualified(qualification: Qualification | undefined, assets: ReleaseAsset[]): ReleaseAsset | undefined {
+function getQualified(qualification: Qualification | undefined,
+                      profile: ProductProfile,
+                      assets: ReleaseAsset[]): ReleaseAsset | undefined {
     if (!qualification) return assets[0]
+
+    let best: [number, ReleaseAsset] | undefined = undefined
     for (const asset of assets) {
-        if ((qualification.os && match(asset.name, qualification.os, osAlias) || !qualification.os)
-            && (qualification.arch && match(asset.name, qualification.arch, archAlias) || !qualification.arch))
-            return asset
+        let score = 0
+
+        if (profile.match && profile.match.match(asset.name)) {
+            score++
+        }
+
+        function sort(qualification: string, observe: string, alias: { [key: string]: string }) {
+            const match = observe.match(asset.name)
+            if (match && match[1] && aliasMatch(match[1], qualification, alias)) {
+                score++
+            }
+        }
+
+        if (qualification.arch && profile.matchArch) {
+            sort(qualification.arch, profile.matchArch, archAlias)
+        }
+        if (qualification.os && profile.matchOs) {
+            sort(qualification.os, profile.matchOs, osAlias)
+        }
+
+        if (!best) {
+            best = [score, asset]
+        } else if (score > best[0]) {
+            best = [score, asset]
+        }
     }
+
+    return best ? best[1] : undefined
+}
+
+interface ProductProfile {
+    repo: string
+    match?: string
+    matchArch?: string
+    matchOs?: string
 }
 
 interface ReleaseAsset {
@@ -21,15 +56,17 @@ interface ReleaseMeta {
 
 class GithubProvider implements ReleaseProvider {
     product: string
+    profile: ProductProfile
 
-    constructor(product: string) {
+    constructor(product: string, profile: ProductProfile) {
         this.product = product
+        this.profile = profile
     }
 
     async getUpdate(current: number, qualification?: Qualification): Promise<Release | undefined> {
         const response =
             await fetch(
-                `https://api.github.com/repos/zhufucdev/${this.product}/releases/latest`,
+                `https://api.github.com/repos/${this.profile.repo}/releases/latest`,
                 {
                     headers: {
                         'Accept': 'application/vnd.github+json',
@@ -43,7 +80,8 @@ class GithubProvider implements ReleaseProvider {
         }
         const latest = await response.json() as ReleaseMeta
         if (current <= 0 || current < this.parseVersion(latest.tag_name)) {
-            const release = getQualified(qualification, latest.assets as ReleaseAsset[])
+            const release =
+                getQualified(qualification, this.profile, latest.assets as ReleaseAsset[])
             if (!release) {
                 console.warn(`[Github Provider] Qualification ${JSON.stringify(qualification)} wasn't met`)
                 return undefined;
