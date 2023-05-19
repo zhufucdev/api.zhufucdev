@@ -27,10 +27,10 @@ export default async (req: Request) => {
 
     const provider = new GithubProvider(product, (await get(product))!)
     const current = query.has('current') ? provider.parseVersion(query.get('current')!) : 0
-    const qualification: Qualification = {
-        os: os as OperatingSystem,
-        arch: arch as Architect
-    }
+    const qualification: Qualification | undefined =
+        os || arch
+            ? {os: os as OperatingSystem, arch: arch as Architect}
+            : undefined
 
     const release = await provider.getUpdate(current, qualification)
     if (release)

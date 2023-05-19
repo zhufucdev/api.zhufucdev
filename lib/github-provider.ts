@@ -1,6 +1,6 @@
 import {match as aliasMatch, osAlias, archAlias} from "./utility";
 
-function getQualified(qualification: Qualification | undefined,
+function getQualified(qualification: Qualification,
                       profile: ProductProfile,
                       assets: ReleaseAsset[]): ReleaseAsset | undefined {
     if (!qualification) return assets[0]
@@ -27,9 +27,7 @@ function getQualified(qualification: Qualification | undefined,
             sort(qualification.os, profile.matchOs, osAlias)
         }
 
-        if (!best) {
-            best = [score, asset]
-        } else if (score > best[0]) {
+        if (!best || score > best[0]) {
             best = [score, asset]
         }
     }
@@ -81,7 +79,7 @@ class GithubProvider implements ReleaseProvider {
         const latest = await response.json() as ReleaseMeta
         if (current <= 0 || current < this.parseVersion(latest.tag_name)) {
             const release =
-                getQualified(qualification, this.profile, latest.assets as ReleaseAsset[])
+                !qualification ? latest.assets[0] : getQualified(qualification, this.profile, latest.assets as ReleaseAsset[])
             if (!release) {
                 console.warn(`[Github Provider] Qualification ${JSON.stringify(qualification)} wasn't met`)
                 return undefined;
