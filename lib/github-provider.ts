@@ -10,7 +10,7 @@ function getQualified(qualification: Qualification | undefined,
         let score = 0
 
         if (profile.match && profile.match.match(asset.name)) {
-            score++
+            return asset
         }
 
         function sort(qualification: string, observe: string, alias: { [key: string]: string }) {
@@ -34,7 +34,7 @@ function getQualified(qualification: Qualification | undefined,
         }
     }
 
-    return best ? best[1] : undefined
+    return best && best[0] > 0 ? best[1] : undefined
 }
 
 interface ProductProfile {
