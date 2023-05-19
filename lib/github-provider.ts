@@ -14,7 +14,7 @@ function getQualified(qualification: Qualification,
         }
 
         function sort(qualification: string, observe: string, alias: { [key: string]: string }) {
-            const match = observe.match(asset.name)
+            const match = asset.name.match(new RegExp(observe))
             if (match && match[1] && aliasMatch(match[1], qualification, alias)) {
                 score++
             }
