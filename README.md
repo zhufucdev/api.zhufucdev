@@ -8,11 +8,15 @@ verify
 
 Designed as an edge function, it uses Vercel as provider
 
-The bad news is that you can't run this in a local environment,
-for some random reason which nobody gives a fuck
+Due to the limitations to a pure JavaScript project, however,
+this is now officially an NextJS project, taking complexity to
+new level.
 
-The project is rather simple however, and thus easy to debug
-even in Vercel env. Just upload
+To debug locally, run
+
+```shell
+pnpm dev
+```
 
 ### Edge Config
 
@@ -30,9 +34,29 @@ A configuration looks like this
 
 ```json
 {
-  "me": "MotionEmulator"
+  "me": {
+    "repo": "zhufucdev/MotionEmulator",
+    "matchArch": "app-(\\w*)-.*",
+    "category": [
+      "standalone"
+    ]
+  }
 }
 ```
 
-Now `?product=me` will reproduce `MotionEmulator`
+Now `?product=me` will reproduce `MotionEmulator`, and `&arch=arm64`
+matches `app-arm64-*.`
+
+## Providers
+
+We have an abstraction layer of download sources called provider
+
+### Github Provider
+
+Repo in the [Edge Config](#edge-config) section is actually a shortcut
+for Github repository identifier 
+
+### Jenkins Provider
+
+I use Jenkins as private CI, and you can do that too
 
