@@ -1,6 +1,6 @@
 import { getAll } from "@vercel/edge-config";
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { handleRelease } from "lib/handler";
+import handleRelease from "lib/handler";
 
 export const config = {
     runtime: 'edge'
