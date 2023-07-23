@@ -1,6 +1,19 @@
 import { Qualification, Release, ReleaseProvider } from "./common";
 import { match as aliasMatch, osAlias, archAlias } from "./utility";
 
+function sort(
+    asset: ReleaseAsset,
+    qualification: string,
+    observe: string,
+    alias: { [key: string]: string },
+) {
+    const match = asset.name.match(new RegExp(observe));
+    if (match && match[1] && aliasMatch(match[1], qualification, alias)) {
+        return 1;
+    }
+    return 0;
+}
+
 function getQualified(
     qualification: Qualification | undefined,
     profile: ProductProfile,
@@ -13,28 +26,22 @@ function getQualified(
         }
 
         let score = 0;
-
-        function sort(
-            qualification: string,
-            observe: string,
-            alias: { [key: string]: string },
-        ) {
-            const match = asset.name.match(new RegExp(observe));
-            if (
-                match &&
-                match[1] &&
-                aliasMatch(match[1], qualification, alias)
-            ) {
-                score++;
-            }
-        }
-
         if (qualification) {
             if (qualification.arch && profile.matchArch) {
-                sort(qualification.arch, profile.matchArch, archAlias);
+                score += sort(
+                    asset,
+                    qualification.arch,
+                    profile.matchArch,
+                    archAlias,
+                );
             }
             if (qualification.os && profile.matchOs) {
-                sort(qualification.os, profile.matchOs, osAlias);
+                score += sort(
+                    asset,
+                    qualification.os,
+                    profile.matchOs,
+                    osAlias,
+                );
             }
 
             if (!best || score > best[0]) {
