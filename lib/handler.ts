@@ -1,4 +1,4 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { bestProvider } from "./providers";
 import { has } from "@vercel/edge-config";
 
