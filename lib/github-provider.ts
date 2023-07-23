@@ -1,3 +1,4 @@
+import { Qualification, Release, ReleaseProvider } from "./common";
 import { match as aliasMatch, osAlias, archAlias } from "./utility";
 
 function getQualified(

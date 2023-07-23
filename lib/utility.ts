@@ -1,3 +1,5 @@
+import { Architect, OperatingSystem } from "./common"
+
 export const archAlias: {[key: string]: Architect} = {
     'armeabi': 'arm32',
     'armv71': 'arm32',

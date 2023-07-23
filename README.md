@@ -35,3 +35,4 @@ A configuration looks like this
 ```
 
 Now `?product=me` will reproduce `MotionEmulator`
+
