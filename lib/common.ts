@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { bestProvider } from "./providers";
 import { has } from "@vercel/edge-config";
 
-export default async function handleRelease(
+export async function handleRelease(
     req: VercelRequest,
     res: VercelResponse,
     product: any,
