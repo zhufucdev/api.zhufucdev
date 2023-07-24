@@ -7,6 +7,7 @@ export const runtime = "edge";
 interface ProductQuery {
     name: string;
     key: string;
+    category: string[];
 }
 
 export async function GET(req: NextRequest) {
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
             }
         }
         if (content) {
-            queried.push({name: product.name, key})
+            queried.push({name: product.name, key, category: product.category!})
         }
     }
     return NextResponse.json(queried)
