@@ -12,7 +12,7 @@ export interface Qualification {
 
 export interface Release {
     url: string
-    name: string
+    versionName: string
     productName: string
 }
 

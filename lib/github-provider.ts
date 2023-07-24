@@ -109,7 +109,7 @@ class GithubProvider implements ReleaseProvider {
             }
             return {
                 url: release.browser_download_url,
-                name: latest.tag_name,
+                versionName: latest.tag_name,
                 productName: this.profile.name
             };
         }
