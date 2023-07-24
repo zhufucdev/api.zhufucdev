@@ -1,6 +1,6 @@
-import { Release, handleRelease } from "@/lib/common";
-import { getAll } from "@vercel/edge-config";
-import { NextRequest, NextResponse } from "next/server";
+import {Release, handleRelease, ProductProfile} from "@/lib/common";
+import {getAll} from "@vercel/edge-config";
+import {NextRequest, NextResponse} from "next/server";
 
 export const runtime = "edge";
 
@@ -10,7 +10,12 @@ export async function GET(req: NextRequest) {
         os = params.get("os"),
         arch = params.get("arch"),
         current = params.get("current");
-    const products = (await getAll()) as any;
+
+    if (!key) {
+        return NextResponse.json("category is not optional", {status: 400});
+    }
+
+    const products = (await getAll()) as ProductProfile[];
     let targets: string[] = [];
     for (const product in products) {
         const category = products[product].category;

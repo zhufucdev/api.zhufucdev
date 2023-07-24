@@ -2,29 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { bestProvider } from "./providers";
 import { has } from "@vercel/edge-config";
 
-export interface ReleaseProvider {
-    /**
-     * Product identifier
-     */
-    product: string
-
-    /**
-     * Query any update according to current version code
-     * @param current A larger number means a newer version.
-     * Corresponding to {@link parseVersion}
-     * @param qualify
-     * @return URL to this update, or undefined if there's none
-     */
-    getUpdate(current: number, qualify?: Qualification): Promise<Release | undefined>
-
-    /**
-     * Parse a version name
-     * @param versionName
-     * @return the version code, the greater, the newer
-     */
-    parseVersion(versionName: string): number
-}
-
 export type Architect = 'arm64' | 'arm32' | 'x86' | 'amd64' | 'universal'
 export type OperatingSystem = 'android' | 'linux' | 'windows' | 'darwin'
 
@@ -36,6 +13,16 @@ export interface Qualification {
 export interface Release {
     url: string
     name: string
+    productName: string
+}
+
+export interface ProductProfile {
+    name: string;
+    repo: string;
+    match?: string;
+    matchArch?: string;
+    matchOs?: string;
+    category?: string[];
 }
 
 export async function handleRelease(

@@ -1,5 +1,6 @@
-import { Qualification, Release, ReleaseProvider } from "./common";
+import {ProductProfile, Qualification, Release} from "./common";
 import { match as aliasMatch, osAlias, archAlias } from "./utility";
+import { ReleaseProvider } from "./providers";
 
 function sort(
     asset: ReleaseAsset,
@@ -51,13 +52,6 @@ function getQualified(
     }
 
     return best && best[0] > 0 ? best[1] : undefined;
-}
-
-interface ProductProfile {
-    repo: string;
-    match?: string;
-    matchArch?: string;
-    matchOs?: string;
 }
 
 interface ReleaseAsset {
@@ -116,6 +110,7 @@ class GithubProvider implements ReleaseProvider {
             return {
                 url: release.browser_download_url,
                 name: latest.tag_name,
+                productName: this.profile.name
             };
         }
         return undefined;
