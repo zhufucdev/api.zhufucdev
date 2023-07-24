@@ -15,13 +15,23 @@ export async function GET(req: NextRequest) {
         return NextResponse.json("category is not optional", {status: 400});
     }
 
+    const filters = key.split(',');
     const products = (await getAll()) as ProductProfile[];
     let targets: string[] = [];
     for (const product in products) {
         const category = products[product].category;
-        if (Array.isArray(category) && category.includes(key)) {
+        if (!Array.isArray(category)) {
+            continue;
+        }
+        let content = true;
+        for (const filter of filters) {
+            if (!category.includes(filter)) {
+                content = false;
+                break;
+            }
+        }
+        if (content) {
             targets.push(product);
-            break;
         }
     }
     const results = await Promise.all(
