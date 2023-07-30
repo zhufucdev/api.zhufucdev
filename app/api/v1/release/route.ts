@@ -5,9 +5,9 @@ export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
     const params = req.nextUrl.searchParams;
-    const product = params.get("product"),
-        os = params.get("os"),
-        arch = params.get("arch"),
-        current = params.get("current");
+    const product = decodeURIComponent(params.get("product") ?? ""),
+        os = decodeURIComponent(params.get("os") ?? ""),
+        arch = decodeURIComponent(params.get("arch") ?? ""),
+        current = decodeURIComponent(params.get("current") ?? "");
     return await handleRelease(req, product, os, arch, current);
 }

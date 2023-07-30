@@ -1,6 +1,6 @@
-import {getAll} from "@vercel/edge-config";
-import {NextRequest, NextResponse} from "next/server";
-import {ProductProfile} from "@/lib/common";
+import { getAll } from "@vercel/edge-config";
+import { NextRequest, NextResponse } from "next/server";
+import { ProductProfile } from "@/lib/common";
 
 export const runtime = "edge";
 
@@ -12,10 +12,10 @@ interface ProductQuery {
 
 export async function GET(req: NextRequest) {
     const params = req.nextUrl.searchParams;
-    if (!params.has('category')) {
-        return NextResponse.json("category is not optional", {status: 400});
+    if (!params.has("category")) {
+        return NextResponse.json("category is not optional", { status: 400 });
     }
-    const categories = params.get('category')!.split(',');
+    const categories = decodeURIComponent(params.get("category")!).split(",");
     const queried: ProductQuery[] = [];
     const available = (await getAll()) as ProductProfile[];
     for (const key in available) {
@@ -28,8 +28,12 @@ export async function GET(req: NextRequest) {
             }
         }
         if (content) {
-            queried.push({name: product.name, key, category: product.category!})
+            queried.push({
+                name: product.name,
+                key,
+                category: product.category!,
+            });
         }
     }
-    return NextResponse.json(queried)
+    return NextResponse.json(queried);
 }
