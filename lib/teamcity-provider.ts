@@ -11,15 +11,12 @@ export class TeamcityProvider implements ReleaseProvider {
     private readonly accessToken: string;
     private readonly buildType: string;
 
-    constructor(product: string, profile: ProductProfile, serverUrl: string, accessToken: string) {
+    constructor(product: string, profile: ProductProfile, serverUrl: string, buildType: string, accessToken: string) {
         this.product = product;
         this.profile = profile;
         this.serverUrl = serverUrl;
         this.accessToken = accessToken;
-        if (!profile.repo.teamcity) {
-            throw `Lacking repo.teamcity in profile of ${product}`
-        }
-        this.buildType = profile.repo.teamcity;
+        this.buildType = buildType;
     }
 
     private async fetchApi(input: string): Promise<Response> {

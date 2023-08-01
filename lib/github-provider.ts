@@ -13,12 +13,14 @@ interface ReleaseMeta {
 }
 
 class GithubProvider implements ReleaseProvider {
-    product: string;
-    profile: ProductProfile;
+    readonly product: string;
+    readonly profile: ProductProfile;
+    private readonly repoId: string;
 
-    constructor(product: string, profile: ProductProfile) {
+    constructor(product: string, repoId: string, profile: ProductProfile) {
         this.product = product;
         this.profile = profile;
+        this.repoId = repoId;
     }
 
     async getUpdate(
@@ -26,7 +28,7 @@ class GithubProvider implements ReleaseProvider {
         qualification?: Qualification,
     ): Promise<Release | undefined> {
         const response = await fetch(
-            `https://api.github.com/repos/${this.profile.repo}/releases/latest`,
+            `https://api.github.com/repos/${this.repoId}/releases/latest`,
             {
                 headers: {
                     Accept: "application/vnd.github+json",

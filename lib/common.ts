@@ -26,9 +26,15 @@ export interface ProductProfile {
     category?: string[];
 }
 
-interface Repo {
-    github?: string;
-    teamcity?: string;
+export interface Repo {
+    github?: string | RepoOptions;
+    teamcity?: string | RepoOptions;
+}
+
+export interface RepoOptions {
+    resource: string;
+    mode?: "prefer" | "restrict";
+    region?: string;
 }
 
 export async function handleRelease(
