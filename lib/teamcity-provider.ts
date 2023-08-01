@@ -1,7 +1,7 @@
 import {ReleaseProvider} from "@/lib/providers";
 import {ProductProfile, Qualification, Release} from "@/lib/common";
 import {nameBasedQualification, Named, parseVersion} from "@/lib/utility";
-import type {Document as Doc} from "domhandler";
+import type {Document as Doc, Element as Ele} from "domhandler";
 import * as xmlparser from "htmlparser2";
 
 export class TeamcityProvider implements ReleaseProvider {
@@ -44,7 +44,7 @@ export class TeamcityProvider implements ReleaseProvider {
             const info = xmlparser.parseDocument(infoXml);
             const tags = xmlparser.DomUtils.getElementsByTagName("tags", info)[0];
             for (const tag of tags.children) {
-                const code = xmlparser.DomUtils.getAttributeValue(tag, "name")!;
+                const code = xmlparser.DomUtils.getAttributeValue(tag as Ele, "name")!;
                 if (code.match(/^v([0-9]\.)*[0-9]$/)) {
                     version = code;
                     break;
