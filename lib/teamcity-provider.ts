@@ -40,11 +40,13 @@ export class TeamcityProvider implements ReleaseProvider {
                     .then(v => v.text());
             const info = xmlparser.parseDocument(infoXml);
             const tags = xmlparser.DomUtils.getElementsByTagName("tags", info)[0];
-            for (const tag of tags.children) {
-                const code = xmlparser.DomUtils.getAttributeValue(tag as Ele, "name")!;
-                if (code.match(/^v([0-9]\.)*[0-9]$/)) {
-                    version = code;
-                    break;
+            if (tags) {
+                for (const tag of tags.children) {
+                    const code = xmlparser.DomUtils.getAttributeValue(tag as Ele, "name")!;
+                    if (code.match(/^v([0-9]\.)*[0-9]$/)) {
+                        version = code;
+                        break;
+                    }
                 }
             }
 
