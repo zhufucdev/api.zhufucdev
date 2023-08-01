@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { bestProvider } from "./providers";
 import { has } from "@vercel/edge-config";
+import {parseVersion} from "@/lib/utility";
 
 export type Architect = "arm64" | "arm32" | "x86" | "amd64" | "universal";
 export type OperatingSystem = "android" | "linux" | "windows" | "darwin";
@@ -18,11 +19,16 @@ export interface Release {
 
 export interface ProductProfile {
     name: string;
-    repo: string;
+    repo: Repo;
     match?: string;
     matchArch?: string;
     matchOs?: string;
     category?: string[];
+}
+
+interface Repo {
+    github?: string;
+    teamcity?: string;
 }
 
 export async function handleRelease(
@@ -57,7 +63,7 @@ export async function handleRelease(
 
     const provider = await bestProvider(req, product);
     const currentVersion =
-        typeof current === "string" ? provider.parseVersion(current) : 0;
+        typeof current === "string" ? parseVersion(current) : 0;
     const qualification: Qualification | undefined =
         os || arch
             ? { os: os as OperatingSystem, arch: arch as Architect }

@@ -1,14 +1,8 @@
 import { get } from "@vercel/edge-config";
 import GithubProvider from "./github-provider";
-import {Qualification, Release} from "./common";
+import {ProductProfile, Qualification, Release} from "./common";
 import { NextRequest } from "next/server";
-
-export async function bestProvider(
-    req: NextRequest,
-    product: string,
-): Promise<ReleaseProvider> {
-    return new GithubProvider(product, (await get(product))!);
-}
+import {TeamcityProvider} from "@/lib/teamcity-provider";
 
 export interface ReleaseProvider {
     /**
@@ -24,11 +18,15 @@ export interface ReleaseProvider {
      * @return URL to this update, or undefined if there's none
      */
     getUpdate(current: number, qualify?: Qualification): Promise<Release | undefined>
+}
 
-    /**
-     * Parse a version name
-     * @param versionName
-     * @return the version code, the greater, the newer
-     */
-    parseVersion(versionName: string): number
+export async function bestProvider(
+    req: NextRequest,
+    product: string,
+): Promise<ReleaseProvider> {
+    const profile = (await get(product)) as ProductProfile;
+    if (profile.repo.teamcity && req.geo && req.geo.country === "CN") {
+        return new TeamcityProvider(product, profile, process.env.TC_URL!, process.env.TC_TOKEN!);
+    }
+    return new GithubProvider(product, profile);
 }

@@ -30,6 +30,14 @@ Well, to make the setup more sophisticated
 Connect store > Create New > Edge Config
 ```
 
+Meanwhile, a token is required when running 
+local development server. A setup is as follows,
+```shell
+cat > .env.local << EOF
+EDGE_CONFIG="URL to your config"
+EOF
+```
+
 A configuration looks like this
 
 ```json
@@ -51,12 +59,12 @@ matches `app-arm64-*.`
 
 We have an abstraction layer of download sources called provider
 
-### Github Provider
+### GitHub Provider
 
 Repo in the [Edge Config](#edge-config) section is actually a shortcut
-for Github repository identifier 
+for GitHub repository identifier 
 
-### Jenkins Provider
+### TeamCity Provider
 
-I use Jenkins as private CI, and you can do that too
+I use TeamCity as private CI, and you can do that too
 

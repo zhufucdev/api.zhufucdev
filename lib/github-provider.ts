@@ -1,60 +1,8 @@
 import {ProductProfile, Qualification, Release} from "./common";
-import { match as aliasMatch, osAlias, archAlias } from "./utility";
+import {parseVersion, nameBasedQualification, Named} from "./utility";
 import { ReleaseProvider } from "./providers";
 
-function sort(
-    asset: ReleaseAsset,
-    qualification: string,
-    observe: string,
-    alias: { [key: string]: string },
-) {
-    const match = asset.name.match(new RegExp(observe));
-    if (match && match[1] && aliasMatch(match[1], qualification, alias)) {
-        return 1;
-    }
-    return 0;
-}
-
-function getQualified(
-    qualification: Qualification | undefined,
-    profile: ProductProfile,
-    assets: ReleaseAsset[],
-): ReleaseAsset | undefined {
-    let best: [number, ReleaseAsset] | undefined = undefined;
-    for (const asset of assets) {
-        if (profile.match && asset.name.match(new RegExp(profile.match))) {
-            return asset;
-        }
-
-        let score = 0;
-        if (qualification) {
-            if (qualification.arch && profile.matchArch) {
-                score += sort(
-                    asset,
-                    qualification.arch,
-                    profile.matchArch,
-                    archAlias,
-                );
-            }
-            if (qualification.os && profile.matchOs) {
-                score += sort(
-                    asset,
-                    qualification.os,
-                    profile.matchOs,
-                    osAlias,
-                );
-            }
-
-            if (!best || score > best[0]) {
-                best = [score, asset];
-            }
-        }
-    }
-
-    return best && best[0] > 0 ? best[1] : undefined;
-}
-
-interface ReleaseAsset {
+interface ReleaseAsset extends Named {
     name: string;
     browser_download_url: string;
 }
@@ -93,8 +41,8 @@ class GithubProvider implements ReleaseProvider {
             return undefined;
         }
         const latest = (await response.json()) as ReleaseMeta;
-        if (current <= 0 || current < this.parseVersion(latest.tag_name)) {
-            const release = getQualified(
+        if (current <= 0 || current < parseVersion(latest.tag_name)) {
+            const release = nameBasedQualification(
                 qualification,
                 this.profile,
                 latest.assets as ReleaseAsset[],
@@ -114,16 +62,6 @@ class GithubProvider implements ReleaseProvider {
             };
         }
         return undefined;
-    }
-
-    parseVersion(versionName: string): number {
-        const matches = /v?([0-9]*)\.([0-9])\.([0-9])/g.exec(versionName);
-        if (!matches) return 0;
-        return (
-            parseInt(matches[1]) * 100 +
-            parseInt(matches[2]) * 10 +
-            parseInt(matches[3])
-        );
     }
 }
 
