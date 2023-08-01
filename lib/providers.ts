@@ -33,7 +33,7 @@ export async function bestProvider(
                 github: () => new GithubProvider(product, getRepoId(profile.repo.github!), profile),
                 teamcity: () =>
                     new TeamcityProvider(product, profile,
-                        getRepoId(profile.repo.teamcity!), process.env.TC_URL!, process.env.TC_TOKEN!)
+                        process.env.TC_URL!, getRepoId(profile.repo.teamcity!), process.env.TC_TOKEN!)
             }
         )
     } else {
