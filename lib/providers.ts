@@ -37,7 +37,7 @@ export async function bestProvider(
                     if (buildType.includes("/")) {
                         const splits = buildType.split("/");
                         buildType = splits.slice(splits.length - 1)[0];
-                        bucket += splits.slice(0, splits.length - 1).join("/");
+                        bucket += "/" + splits.slice(0, splits.length - 1).join("/");
                     }
                     return new TeamcityProvider(
                         product, profile,
