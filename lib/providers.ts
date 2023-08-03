@@ -31,9 +31,21 @@ export async function bestProvider(
             profile.repo,
             {
                 github: () => new GithubProvider(product, getRepoId(profile.repo.github!), profile),
-                teamcity: () =>
-                    new TeamcityProvider(product, profile,
-                        process.env.TC_URL!, getRepoId(profile.repo.teamcity!), process.env.TC_TOKEN!)
+                teamcity: () => {
+                    let buildType = getRepoId(profile.repo.teamcity!);
+                    let bucket = process.env.S3_URL!
+                    if (buildType.includes("/")) {
+                        const splits = buildType.split("/");
+                        buildType = splits.slice(splits.length - 1)[0];
+                        bucket += splits.slice(0, splits.length - 1).join("/");
+                    }
+                    return new TeamcityProvider(
+                        product, profile,
+                        process.env.TC_URL!,
+                        bucket, buildType,
+                        process.env.TC_TOKEN!
+                    )
+                }
             }
         )
     } else {

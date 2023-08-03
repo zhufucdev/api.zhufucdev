@@ -9,13 +9,16 @@ export class TeamcityProvider implements ReleaseProvider {
     private readonly profile: ProductProfile;
     private readonly serverUrl: string;
     private readonly accessToken: string;
+    private readonly bucketUrl: string;
     private readonly buildType: string;
 
-    constructor(product: string, profile: ProductProfile, serverUrl: string, buildType: string, accessToken: string) {
+    constructor(product: string, profile: ProductProfile, serverUrl: string,
+                bucketUrl: string, buildType: string, accessToken: string) {
         this.product = product;
         this.profile = profile;
         this.serverUrl = serverUrl;
         this.accessToken = accessToken;
+        this.bucketUrl = bucketUrl;
         this.buildType = buildType;
     }
 
@@ -79,7 +82,7 @@ export class TeamcityProvider implements ReleaseProvider {
         const build = xmlparser.DomUtils.getElementsByTagName("build", target)[0];
         const id = xmlparser.DomUtils.getAttributeValue(build, "id");
         return {
-            url: `https://iloli.zhufucdev.com:18800/motion-emulator/ME/${this.buildType}/${id}/${best.name}`,
+            url: `${this.bucketUrl}/${this.buildType}/${id}/${best.name}`,
             productName: this.profile.name,
             versionName: version
         }
