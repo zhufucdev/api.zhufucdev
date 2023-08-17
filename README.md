@@ -43,7 +43,9 @@ A configuration looks like this
 ```json
 {
   "me": {
-    "repo": "zhufucdev/MotionEmulator",
+    "repo": {
+      "github": "zhufucdev/MotionEmulator"
+    },
     "matchArch": "app-(\\w*)-.*",
     "category": [
       "standalone"
