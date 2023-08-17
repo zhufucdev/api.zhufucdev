@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { bestProvider } from "./providers";
-import { has } from "@vercel/edge-config";
+import {NextRequest, NextResponse} from "next/server";
+import {bestProvider} from "./providers";
+import {has} from "@vercel/edge-config";
 import {parseVersion} from "@/lib/utility";
 
 export type Architect = "arm64" | "arm32" | "x86" | "amd64" | "universal";
@@ -45,7 +45,7 @@ export async function handleRelease(
     current: any,
 ): Promise<NextResponse> {
     if (!product) {
-        return NextResponse.json("product is not optional", { status: 400 });
+        return NextResponse.json("product is not optional", {status: 400});
     }
     if (typeof product !== "string" || !(await has(product))) {
         return NextResponse.json(`unknown product: ${product}`, {
@@ -57,28 +57,31 @@ export async function handleRelease(
         typeof os === "string" &&
         !["android", "linux", "windows", "darwin"].includes(os)
     ) {
-        return NextResponse.json(`unknown os: ${os}`, { status: 400 });
+        return NextResponse.json(`unknown os: ${os}`, {status: 400});
     }
     if (
         arch &&
         typeof arch === "string" &&
         !["arm64", "arm32", "x86", "amd64", "universal"].includes(arch)
     ) {
-        return NextResponse.json(`unknown arch: ${arch}`, { status: 400 });
+        return NextResponse.json(`unknown arch: ${arch}`, {status: 400});
     }
 
     const provider = await bestProvider(req, product);
+    if (!provider) {
+        return NextResponse.json("no provider available", {status: 500})
+    }
     const currentVersion =
         typeof current === "string" ? parseVersion(current) : 0;
     const qualification: Qualification | undefined =
         os || arch
-            ? { os: os as OperatingSystem, arch: arch as Architect }
+            ? {os: os as OperatingSystem, arch: arch as Architect}
             : undefined;
 
     const release = await provider.getUpdate(currentVersion, qualification);
     if (release) {
         return NextResponse.json(release);
     } else {
-        return NextResponse.json("not found", { status: 404 });
+        return NextResponse.json("not found", {status: 404});
     }
 }

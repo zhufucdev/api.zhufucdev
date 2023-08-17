@@ -22,6 +22,11 @@ export class TeamcityProvider implements ReleaseProvider {
         this.buildType = buildType;
     }
 
+    async ping(): Promise<boolean> {
+        const res = await this.fetchApi(`${this.serverUrl}/app/rest`)
+        return res.ok
+    }
+
     private async fetchApi(input: string): Promise<Response> {
         return fetch(input, {headers: {"Authorization": `Bearer ${this.accessToken}`}});
     }

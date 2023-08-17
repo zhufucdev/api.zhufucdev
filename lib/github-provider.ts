@@ -23,6 +23,11 @@ class GithubProvider implements ReleaseProvider {
         this.repoId = repoId;
     }
 
+    async ping(): Promise<boolean> {
+        const res = await fetch('https://api.github.com')
+        return res.ok
+    }
+
     async getUpdate(
         current: number,
         qualification?: Qualification,
