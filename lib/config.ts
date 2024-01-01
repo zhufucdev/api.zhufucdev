@@ -1,5 +1,3 @@
-import {Named} from "@/lib/utility";
-
 const url = process.env.CONFIG_URL
 
 let cache: { [key: string]: any } | undefined = undefined
@@ -24,8 +22,8 @@ export async function has(name: string) {
     return typeof data[name] !== 'undefined'
 }
 
-export async function getAll(): Promise<Named[]> {
-    return Object.entries(await getData()).map(([key, entry]) => ({name: key, ...entry}))
+export function getAll(): Promise<{[key: string]: any}> {
+    return getData()
 }
 
 export async function get(name: string) {
