@@ -1,6 +1,6 @@
-import { getAll } from "@vercel/edge-config";
 import { NextRequest, NextResponse } from "next/server";
 import { ProductProfile } from "@/lib/common";
+import {getAll} from "@/lib/config";
 
 export const runtime = "edge";
 

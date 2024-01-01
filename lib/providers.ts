@@ -1,4 +1,3 @@
-import {get} from "@vercel/edge-config";
 import GithubProvider from "./github-provider";
 import {
     ProductProfile,
@@ -8,6 +7,7 @@ import {
 } from "./common";
 import {NextRequest} from "next/server";
 import {TeamcityProvider} from "@/lib/teamcity-provider";
+import {get} from "@/lib/config";
 
 export interface ReleaseProvider {
     /**

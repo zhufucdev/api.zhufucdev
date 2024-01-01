@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {bestProvider} from "./providers";
-import {has} from "@vercel/edge-config";
 import {parseVersion} from "@/lib/utility";
+import {has} from "@/lib/config";
 
 export type Architect = "arm64" | "arm32" | "x86" | "amd64" | "universal";
 export type OperatingSystem = "android" | "linux" | "windows" | "darwin";
