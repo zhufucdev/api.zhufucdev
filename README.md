@@ -9,7 +9,7 @@ verify
 Designed as an edge function, it uses Vercel as provider
 
 Due to the limitations to a pure JavaScript project, however,
-this is now officially an NextJS project, taking complexity to
+this is now officially a Next.js project, taking complexity to
 new level.
 
 To debug locally, run
