@@ -15,6 +15,7 @@ async function getData() {
             throw 'Configuration not available (' + res.statusText + ')'
         }
         cache = await res.json()
+        lastUpdate = Date.now()
     }
     return cache!!
 }
